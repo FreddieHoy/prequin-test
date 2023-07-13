@@ -1,19 +1,21 @@
 import styled from "@emotion/styled";
 
-export const LoginPage = styled.div`
+type PageWrapProps = {
+  justify?: "center" | "end" | "start";
+  align?: "center" | "end" | "start";
+  padding?: string;
+};
+
+export const PageWrap = styled.div<PageWrapProps>`
   height: 100%;
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
-  gap: 12px;
+  justify-content: ${(props) => props.justify || "start"};
+  align-items: ${(props) => props.align || "start"};
+  padding: ${(props) => props.padding || ""};
 `;
 
-export const DataPage = styled.div`
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+export const TableContainer = styled.div`
+  padding: 24px;
 `;

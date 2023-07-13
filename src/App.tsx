@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { DataPage, LoginPage } from "./styles";
+import { PageWrap } from "./styles";
 import axios from "axios";
 import { Auth } from "./Auth";
 import { Login } from "./Pages/Login";
 import { CircularProgress } from "@mui/material";
+import { Firm } from "./types";
+import { DataPage } from "./Pages/DataPage";
+
+export type Page = "loading" | "login" | "data";
 
 function App() {
-  const [page, setPage] = useState("loading");
+  const [page, setPage] = useState<Page>("loading");
+  const [firmData, setFirmData] = useState<Firm[]>([]);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -17,12 +22,16 @@ function App() {
     axios
       .get("/api/investor", { params, headers })
       .then((res) => {
-        console.log("res", res);
+        console.log("res", res.data);
+        try {
+          setFirmData(res.data.data as Firm[]);
+        } catch (e) {
+          console.error("Failed to create Firm entities:", e);
+        }
         setPage("data");
       })
       .catch((e) => {
-        console.log("Error", e);
-
+        console.error("Error", e);
         setPage("login");
       });
   }, []);
@@ -30,12 +39,12 @@ function App() {
   return (
     <>
       {page === "loading" && (
-        <LoginPage>
+        <PageWrap justify="center" align="center">
           <CircularProgress />
-        </LoginPage>
+        </PageWrap>
       )}
       {page === "login" && <Login setPage={setPage} />}
-      {page === "data" && <DataPage>Data page</DataPage>}
+      {page === "data" && <DataPage firms={firmData} />}
     </>
   );
 }

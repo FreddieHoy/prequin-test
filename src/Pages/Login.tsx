@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { Auth } from "../Auth";
-import { LoginPage } from "../styles";
+import { PageWrap } from "../styles";
+import { Page } from "../App";
 
-export const Login = ({ setPage }: { setPage: (val: string) => void }) => {
+export const Login = ({ setPage }: { setPage: (val: Page) => void }) => {
   const [userName, setUserName] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [error, setError] = useState<string | undefined>(undefined);
@@ -25,7 +26,7 @@ export const Login = ({ setPage }: { setPage: (val: string) => void }) => {
         });
       } catch (e: any) {
         console.log("ERROR", e);
-        const message = e.response.data.message ?? "Error with ";
+        const message = e.response.data.message ?? undefined;
         if (message) {
           setError(message);
         } else {
@@ -36,7 +37,7 @@ export const Login = ({ setPage }: { setPage: (val: string) => void }) => {
   };
 
   return (
-    <LoginPage>
+    <PageWrap justify="center" align="center">
       <Box
         sx={{
           display: "flex",
@@ -75,6 +76,6 @@ export const Login = ({ setPage }: { setPage: (val: string) => void }) => {
         <br />
         8f0bc69bc2a643f8bb8034a15081962e
       </Box>
-    </LoginPage>
+    </PageWrap>
   );
 };
