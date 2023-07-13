@@ -7,9 +7,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import { Auth } from "../Auth";
 
-export const DataPage = ({ firms }: { firms: Firm[] }) => {
+type DataPageProps = {
+  firms: Firm[];
+};
+
+export const DataPage = ({ firms }: DataPageProps) => {
   const tableData = firms.map((item) => ({
     firmID: item.firmID,
     firmName: item.firmName,
@@ -51,6 +56,13 @@ export const DataPage = ({ firms }: { firms: Firm[] }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        <Button
+          onClick={() => {
+            Auth.removeAccessToken();
+          }}
+        >
+          Logout
+        </Button>
       </Box>
     </PageWrap>
   );

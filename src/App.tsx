@@ -7,10 +7,8 @@ import { CircularProgress } from "@mui/material";
 import { Firm } from "./types";
 import { DataPage } from "./Pages/DataPage";
 
-export type Page = "loading" | "login" | "data";
-
 function App() {
-  const [page, setPage] = useState<Page>("loading");
+  const [isLoading, setIsLoading] = useState(true);
   const [firmData, setFirmData] = useState<Firm[]>([]);
 
   useEffect(() => {
@@ -28,23 +26,23 @@ function App() {
         } catch (e) {
           console.error("Failed to create Firm entities:", e);
         }
-        setPage("data");
+        setIsLoading(false);
       })
       .catch((e) => {
         console.error("Error", e);
-        setPage("login");
+        setIsLoading(false);
       });
   }, []);
 
   return (
     <>
-      {page === "loading" && (
+      {isLoading && (
         <PageWrap justify="center" align="center">
           <CircularProgress />
         </PageWrap>
       )}
-      {page === "login" && <Login setPage={setPage} />}
-      {page === "data" && <DataPage firms={firmData} />}
+      {!Auth.isAuthenticated() && <Login />}
+      {Auth.isAuthenticated() && <DataPage firms={firmData} />}
     </>
   );
 }

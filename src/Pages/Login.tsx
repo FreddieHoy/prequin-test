@@ -3,9 +3,8 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { Auth } from "../Auth";
 import { PageWrap } from "../styles";
-import { Page } from "../App";
 
-export const Login = ({ setPage }: { setPage: (val: Page) => void }) => {
+export const Login = () => {
   const [userName, setUserName] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [error, setError] = useState<string | undefined>(undefined);
@@ -22,7 +21,6 @@ export const Login = ({ setPage }: { setPage: (val: Page) => void }) => {
           console.log("res", res);
           Auth.setAccessToken(res.data.access_token);
           Auth.setAccessToken(res.data.access_token);
-          setPage("data");
         });
       } catch (e: any) {
         console.log("ERROR", e);
