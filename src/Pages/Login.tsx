@@ -1,27 +1,36 @@
 import React, { useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { Auth } from "../Auth";
 import { PageWrap } from "../styles";
 
-export const Login = () => {
+export const Login = ({ getData }: { getData: () => void }) => {
   const [userName, setUserName] = useState("");
   const [apiKey, setApiKey] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
   const onSubmit = async () => {
     if (userName && apiKey) {
+      setLoading(true);
       try {
         setError(undefined);
 
         const params = new URLSearchParams();
         params.append("username", userName);
         params.append("apikey", apiKey);
-        axios.post("/connect/token", params).then((res) => {
-          console.log("res", res);
-          Auth.setAccessToken(res.data.access_token);
-          Auth.setAccessToken(res.data.access_token);
-        });
+        await axios
+          .post("/connect/token", params)
+          .then((res) => {
+            Auth.setAccessToken(res.data.access_token);
+            Auth.setAccessToken(res.data.access_token);
+            setLoading(false);
+          })
+          .catch((e) => {
+            console.error(e);
+            setLoading(false);
+          });
+        getData();
       } catch (e: any) {
         console.log("ERROR", e);
         const message = e.response.data.message ?? undefined;
@@ -63,6 +72,7 @@ export const Login = () => {
         <Button variant="contained" onClick={onSubmit}>
           Login
         </Button>
+        {loading && <CircularProgress />}
         {error && (
           <Typography variant="caption" display="block" gutterBottom>
             {error}

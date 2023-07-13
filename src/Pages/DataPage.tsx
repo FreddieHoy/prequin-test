@@ -12,9 +12,10 @@ import { Auth } from "../Auth";
 
 type DataPageProps = {
   firms: Firm[];
+  setFirmData: (val: Firm[] | undefined) => void;
 };
 
-export const DataPage = ({ firms }: DataPageProps) => {
+export const DataPage = ({ firms, setFirmData }: DataPageProps) => {
   const tableData = firms.map((item) => ({
     firmID: item.firmID,
     firmName: item.firmName,
@@ -25,7 +26,17 @@ export const DataPage = ({ firms }: DataPageProps) => {
 
   return (
     <PageWrap>
-      <Typography variant="h5">Firm Data</Typography>
+      <Box sx={{ padding: "24px 24px 0 24px", display: "flex", gap: "12px" }}>
+        <Typography variant="h5">Firm Data</Typography>
+        <Button
+          onClick={() => {
+            Auth.removeAccessToken();
+            setFirmData(undefined);
+          }}
+        >
+          Logout
+        </Button>
+      </Box>
       <Box sx={{ padding: "24px" }}>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -56,13 +67,6 @@ export const DataPage = ({ firms }: DataPageProps) => {
             </TableBody>
           </Table>
         </TableContainer>
-        <Button
-          onClick={() => {
-            Auth.removeAccessToken();
-          }}
-        >
-          Logout
-        </Button>
       </Box>
     </PageWrap>
   );

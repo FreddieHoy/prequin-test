@@ -29,10 +29,12 @@ export class Auth {
   static isAuthenticated(): boolean {
     const payload = this.getPayload();
     if (!payload) return false;
+
     const now = Math.round(Date.now() / 1000);
     if (!!payload && typeof payload !== "string") {
       return !!payload.exp && now < payload.exp;
     }
+
     return false;
   }
 }

@@ -1,48 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { PageWrap } from "./styles";
-import axios from "axios";
 import { Auth } from "./Auth";
 import { Login } from "./Pages/Login";
 import { CircularProgress } from "@mui/material";
-import { Firm } from "./types";
 import { DataPage } from "./Pages/DataPage";
+import { useGetData } from "./hooks/useGetData";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [firmData, setFirmData] = useState<Firm[]>([]);
-
-  useEffect(() => {
-    const params = new URLSearchParams();
-    params.append("FirmID", "2670,2792,332,3611");
-    const token = Auth.getAccessToken();
-    const headers = { Authorization: `Bearer ${token}` };
-
-    axios
-      .get("/api/investor", { params, headers })
-      .then((res) => {
-        console.log("res", res.data);
-        try {
-          setFirmData(res.data.data as Firm[]);
-        } catch (e) {
-          console.error("Failed to create Firm entities:", e);
-        }
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        console.error("Error", e);
-        setIsLoading(false);
-      });
-  }, []);
+  // In larger app this would be a user request and it would have it's own context
+  const { firmData, loading, setFirmData, getData } = useGetData();
 
   return (
     <>
-      {isLoading && (
+      {loading ? (
         <PageWrap justify="center" align="center">
           <CircularProgress />
         </PageWrap>
+      ) : Auth.isAuthenticated() && firmData ? (
+        <DataPage firms={firmData} setFirmData={setFirmData} />
+      ) : (
+        <Login getData={getData} />
       )}
-      {!Auth.isAuthenticated() && <Login />}
-      {Auth.isAuthenticated() && <DataPage firms={firmData} />}
     </>
   );
 }
